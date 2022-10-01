@@ -1,9 +1,11 @@
 <template>
-  <div>
-    <h1 class="text-3xl font-bold">Hello world!</h1>
+  <div class="min-h-screen font-Poppins bg-latar">
+    <SiteTitle />
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import SiteTitle from "./components/SiteTitle.vue";
+</script>
 
 <style lang="scss" scoped></style>
