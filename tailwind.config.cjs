@@ -5,15 +5,11 @@ module.exports = {
     extend: {
       colors: {
         primary: "#16ABF8",
-        latar: "#E5E5E5",
+        latar: "#F4F4F4",
       },
     },
     fontFamily: {
       Poppins: ["Poppins, sans-serif"],
-    },
-    container: {
-      padding: "2rem",
-      center: "true",
     },
   },
   plugins: [],
