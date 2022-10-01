@@ -1,7 +1,9 @@
-<script setup></script>
-
 <template>
-  <h1 className="text-3xl font-bold underline">Hello world!</h1>
+  <div>
+    <h1 class="text-3xl font-bold">Hello world!</h1>
+  </div>
 </template>
 
-<style scoped></style>
+<script setup></script>
+
+<style lang="scss" scoped></style>
