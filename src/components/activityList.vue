@@ -48,7 +48,6 @@ import EmptyState from "./emptyState.vue";
 import DeleteModal from "./deleteModal.vue";
 import DoneAlertModal from "./doneAlertModal.vue";
 
-const queryTimeout = ref(null);
 const deleteModal = ref();
 const doneAlertModal = ref();
 
@@ -63,20 +62,17 @@ onMounted(async () => {
 });
 
 const getActivities = async () => {
-  clearTimeout(queryTimeout.value);
-  queryTimeout.value = setTimeout(async () => {
-    try {
-      const response = await axios.get(
-        `https://todo.api.devcode.gethired.id/activity-groups?email=alfian.aswinda%40gmail.com`
-      );
-      //   console.log(response.data.data);
-      activityObj.data = response.data.data;
-      console.log(activityObj.data);
-    } catch (error) {
-      console.error(error);
-    }
-    return;
-  }, 300);
+  try {
+    const response = await axios.get(
+      `https://todo.api.devcode.gethired.id/activity-groups?email=alfian.aswinda%40gmail.com`
+    );
+    //   console.log(response.data.data);
+    activityObj.data = response.data.data;
+    console.log(activityObj.data);
+  } catch (error) {
+    console.error(error);
+  }
+  return;
 };
 
 const addNewActivity = async () => {

@@ -1,113 +1,142 @@
 <template>
   <div class="flex justify-between w-full">
-    <h1 class="font-bold text-3xl">Activity</h1>
-    <button
-      class="bg-primary text-white font-semibold text-base rounded-full py-3 px-3 lg:px-6 gap-2 inline-flex items-center"
-      type="button"
-      data-cy="activity-add-button"
-      @click="addNewActivity()"
-    >
-      <i class="fa-solid fa-plus"></i>
-      <span class="hidden lg:block"> Tambah </span>
-    </button>
-  </div>
-  <div
-    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-7 lg:mt-13"
-    data-cy="activity-item"
-    v-if="activityObj.data.length !== 0"
-  >
-    <ActivityCard
-      v-for="activity in activityObj.data"
-      :activity="activity"
-      :key="activity.id"
-      @delete="deleteModalActive(activity)"
-    />
-  </div>
-  <div v-else class="min-h-[70vh] lg:min-h-[60vh] flex items-center">
-    <EmptyState @click="addNewActivity()" />
-  </div>
+    <div class="inline-flex items-center gap-3 lg:gap-4">
+      <RouterLink
+        :to="{ name: 'home' }"
+        type="button"
+        data-cy="activity-add-button"
+      >
+        <i class="fa-solid fa-angle-left fa-2x"></i>
+      </RouterLink>
+      <h1
+        class="font-bold text-2xl lg:text-3xl"
+        id="item-title"
+        data-cy="todo-title"
+        contenteditable="true"
+        @blur="editTitle()"
+        @input="handleInput"
+      >
+        {{ itemState.data.title }}
+      </h1>
+      <button type="button" @click="focusTitle()">
+        <i class="fa-solid fa-pencil"></i>
+      </button>
+    </div>
 
-  <div data-cy="modal-delete">
-    <DeleteModal
-      ref="deleteModal"
-      :message="activityObj.delTitle"
-      @delete-modal="deleteActivity(activityObj.delId)"
-    />
+    <div class="inline-flex items-center gap-2 lg:gap-4">
+      <div>
+        <!-- <button
+          v-if="itemState.data.length === 0"
+          class="hidden"
+          type="button"
+        ></button> -->
+        <button
+          class="px-4 py-3 rounded-full border-2 border-[#888888]"
+          type="button"
+          data-cy="todo-sort-button"
+          @click=""
+        >
+          <i
+            class="fa-solid fa-right-left fa-rotate-90"
+            style="color: #888888"
+          ></i>
+        </button>
+      </div>
+      <button
+        class="bg-primary text-white font-semibold text-base rounded-full py-5 lg:py-4 px-5 lg:px-6 gap-2 inline-flex items-center"
+        type="button"
+        data-cy="activity-add-button"
+        @click=""
+      >
+        <i class="fa-solid fa-plus"></i>
+        <span class="hidden lg:block"> Tambah </span>
+      </button>
+    </div>
   </div>
-
-  <div data-cy="modal-information">
-    <DoneAlertModal ref="doneAlertModal" />
+  <div></div>
+  <div class="min-h-[70vh] lg:min-h-[60vh] flex justify-center items-center">
+    <EmptyState @click="" emptyActivity />
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref, reactive } from "vue";
+import { onBeforeMount, reactive } from "vue";
+import { useRoute } from "vue-router";
 import axios from "axios";
-import ActivityCard from "./activityCard.vue";
 import EmptyState from "./emptyState.vue";
-import DeleteModal from "./deleteModal.vue";
-import DoneAlertModal from "./doneAlertModal.vue";
 
-const queryTimeout = ref(null);
-const deleteModal = ref();
-const doneAlertModal = ref();
-
-const activityObj = reactive({
+const route = useRoute();
+const itemState = reactive({
   data: [],
-  delId: "",
-  delTitle: "",
+  opt: [
+    {
+      label: "Terbaru",
+      value: "terbaru",
+      icon: "terbaru",
+    },
+    {
+      label: "Terlama",
+      value: "terlama",
+      icon: "terlama",
+    },
+    {
+      label: "A-Z",
+      value: "a_z",
+      icon: "A-Z",
+    },
+    {
+      label: "Z-A",
+      value: "z_a",
+      icon: "Z-A",
+    },
+    {
+      label: "Belum Selesai",
+      value: "belum_selesai",
+      icon: "belum-selesai",
+    },
+  ],
 });
 
-onMounted(async () => {
-  await getActivities();
+onBeforeMount(async () => {
+  await getItemList();
 });
 
-const getActivities = async () => {
-  clearTimeout(queryTimeout.value);
-  queryTimeout.value = setTimeout(async () => {
-    try {
-      const response = await axios.get(
-        `https://todo.api.devcode.gethired.id/activity-groups?email=alfian.aswinda%40gmail.com`
-      );
-      //   console.log(response.data.data);
-      activityObj.data = response.data.data;
-      console.log(activityObj.data);
-    } catch (error) {
-      console.error(error);
-    }
-    return;
-  }, 300);
+const getItemList = async () => {
+  try {
+    const id = route.params.id;
+    const response = await axios.get(
+      `https://todo.api.devcode.gethired.id/activity-groups/${id}`
+    );
+    console.log(response.data);
+    itemState.data = response.data;
+  } catch (error) {
+    console.error(error);
+  }
+  return;
 };
 
-const addNewActivity = async () => {
-  const req = {
-    title: "New Activity",
-    email: "alfian.aswinda@gmail.com",
+const handleInput = (e) => {
+  itemState.data.title = e.target.innerHTML;
+  return;
+};
+
+const focusTitle = () => {
+  document.getElementById("item-title").focus();
+  return;
+};
+
+const editTitle = async () => {
+  const request = {
+    title: itemState.data.title,
   };
-  await axios.post(
-    "https://todo.api.devcode.gethired.id/activity-groups",
-    req,
+  await axios.patch(
+    `https://todo.api.devcode.gethired.id/activity-groups/${itemState.data.id}`,
+    request,
     {
       headers: { "content-type": "application/json" },
     }
   );
-  await getActivities();
+  console.log(itemState.data);
   return;
-};
-
-const deleteModalActive = (value) => {
-  activityObj.delId = value.id;
-  activityObj.delTitle = value.title;
-  deleteModal.value.toggleModal();
-  return;
-};
-
-const deleteActivity = async (id) => {
-  await axios.delete(
-    `https://todo.api.devcode.gethired.id/activity-groups/${id}`
-  );
-  await deleteModal.value.toggleModal();
-  activityObj.data = activityObj.data.filter((val) => val.id !== id);
-  doneAlertModal.value.toggleModal();
 };
 </script>
