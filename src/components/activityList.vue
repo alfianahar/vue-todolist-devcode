@@ -20,19 +20,20 @@
       v-for="activity in activityObj.data"
       :activity="activity"
       :key="activity.id"
-      @delete="deleteModalActive"
+      @delete="deleteModalActive(activity)"
     />
   </div>
   <div v-else class="min-h-[70vh] lg:min-h-[60vh] flex items-center">
     <EmptyState @click="addNewActivity()" />
   </div>
 
-  <DeleteModal
-    data-cy="modal-delete"
-    ref="modalDelete"
-    :message="activityObj.delTitle"
-    @delete-modal="deleteActivity(activityObj.delId)"
-  />
+  <div data-cy="modal-delete">
+    <DeleteModal
+      ref="deleteModal"
+      :message="activityObj.delTitle"
+      @delete-modal="deleteActivity(activityObj.delId)"
+    />
+  </div>
 </template>
 
 <script setup>
@@ -70,7 +71,6 @@ const getActivities = async () => {
     }
     return;
   }, 300);
-  //   console.log(queryTimeout);
 };
 
 const addNewActivity = async () => {
@@ -89,9 +89,9 @@ const addNewActivity = async () => {
   return;
 };
 
-const deleteModalActive = (val) => {
-  activityObj.delId = val.id;
-  activityObj.delTitle = val.title;
+const deleteModalActive = (value) => {
+  activityObj.delId = value.id;
+  activityObj.delTitle = value.title;
   deleteModal.value.toggleModal();
   return;
 };
@@ -101,7 +101,7 @@ const deleteActivity = async (id) => {
     `https://todo.api.devcode.gethired.id/activity-groups/${id}`
   );
   await deleteModal.value.toggleModal();
-  activityObj.data = activityObj.data.filterfilter((val) => val.id !== id);
+  activityObj.data = activityObj.data.filter((val) => val.id !== id);
   // alertDone.value.toogleModal();
 };
 </script>

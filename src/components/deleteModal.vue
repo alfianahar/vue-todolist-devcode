@@ -3,22 +3,20 @@
     <Transition name="modal-outer">
       <div
         v-show="modalActive"
-        class="absolute w-full bg-black bg-opacity-40 h-screen top-0 left-0 flex justify-center px-8"
+        class="w-full bg-black bg-opacity-40 h-screen top-0 left-0 flex justify-center items-center fixed"
         @click.self="toggleModal()"
       >
         <Transition name="modal-inner">
           <div class="relative p-4 w-full max-w-xl h-auto md:h-auto">
-            <!-- Modal content -->
             <div class="relative bg-white rounded-lg shadow">
-              <!-- Modal body -->
               <form
                 autocomplete="off"
                 method="POST"
-                @submit.prevent="emit('delete-modal')"
+                @submit.prevent="$emit('delete-modal')"
               >
                 <div class="p-8 flex flex-col gap-7 items-center">
                   <i
-                    class="fa-solid fa-triangle-exclamation"
+                    class="fa-solid fa-triangle-exclamation fa-5x"
                     style="color: #ed4c5c"
                   ></i>
 
@@ -58,18 +56,18 @@ vbase
 <script setup>
 import { ref } from "vue";
 
-defineEmits(["delete-modal"]);
 defineProps({
   message: {
     type: String,
     default: "New Task",
   },
 });
+defineEmits(["delete-modal"]);
 
-const isModalOpen = ref(false);
+const modalActive = ref(false);
 
 const toggleModal = () => {
-  isModalOpen.value = !isModalOpen.value;
+  modalActive.value = !modalActive.value;
   return;
 };
 defineExpose({ toggleModal });

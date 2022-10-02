@@ -12,7 +12,7 @@
       >
         {{ newDate(activity.created_at) }}
       </p>
-      <button data-cy="activity-item-delete-button" @click="emit('whenDelete')">
+      <button data-cy="activity-item-delete-button" @click="$emit('delete')">
         <i class="fa-regular fa-trash-can" style="color: #888888"></i>
       </button>
     </div>
@@ -31,7 +31,7 @@ defineProps({
   },
 });
 
-defineEmits(['delete']);
+defineEmits(["delete"]);
 
 function newDate(value) {
   let val = value.slice(0, 10).split("-");
