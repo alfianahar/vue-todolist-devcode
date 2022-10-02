@@ -1,5 +1,6 @@
 <template>
   <div
+    @click="activityList(activity.id)"
     class="p-6 w-full lg:w-56 h-56 bg-white rounded-xl border border-gray-200 shadow-xl inline-flex flex-col justify-between"
   >
     <h1 class="mb-2 text-xl font-bold" data-cy="activity-item-title">
@@ -12,7 +13,11 @@
       >
         {{ newDate(activity.created_at) }}
       </p>
-      <button data-cy="activity-item-delete-button" @click="$emit('delete')">
+      <button
+        type="button"
+        data-cy="activity-item-delete-button"
+        @click.stop="$emit('delete')"
+      >
         <i class="fa-regular fa-trash-can" style="color: #888888"></i>
       </button>
     </div>
@@ -21,8 +26,6 @@
 
 <script setup>
 import { useRouter } from "vue-router";
-
-const router = useRouter();
 
 defineProps({
   activity: {
@@ -57,4 +60,16 @@ function newDate(value) {
 
   return val;
 }
+
+// console.log(activity);
+const router = useRouter();
+const activityList = (activity) => {
+  router.push({
+    name: "detail",
+    params: {
+      id: activity,
+    },
+  });
+  return;
+};
 </script>
