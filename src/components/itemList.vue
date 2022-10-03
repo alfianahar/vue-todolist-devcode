@@ -46,7 +46,7 @@
         class="bg-primary text-white font-semibold text-base rounded-full py-5 lg:py-4 px-5 lg:px-6 gap-2 inline-flex items-center"
         type="button"
         data-cy="todo-add-button"
-        @click=""
+        @click="addModalActive()"
       >
         <i class="fa-solid fa-plus"></i>
         <span class="hidden lg:block"> Tambah </span>
@@ -55,17 +55,15 @@
   </div>
   <div></div>
   <div class="min-h-[70vh] lg:min-h-[60vh] flex justify-center items-center">
-    <EmptyState @click="" emptyActivity />
+    <EmptyState @click="addModalActive()" emptyActivity />
   </div>
 
   <div data-cy="modal-add">
-    <AddModal
-      ref="addModal"
-      @when-submit=""
+    <AddModal ref="addModal" />
+    <!-- @when-submit=""
       :title="itemState.editPriority"
       :priority="itemState.editPriority"
-      :is-edit="itemState.isEdit"
-    />
+      :is-edit="itemState.isEdit" -->
   </div>
 </template>
 
@@ -77,10 +75,11 @@ import EmptyState from "./emptyState.vue";
 import AddModal from "./addModal.vue";
 
 const route = useRoute();
-const addMOdal = ref();
+const addModal = ref();
 
 const itemState = reactive({
   data: [],
+  itemId: "",
   editTitle: "",
   editPriority: {
     label: "Very High",
@@ -161,45 +160,46 @@ const editTitle = async () => {
 };
 
 const addModalActive = (value) => {
-  const priorityList = [
-    {
-      label: "Very High",
-      value: "very-high",
-      color: "red",
-    },
-    {
-      label: "High",
-      value: "high",
-      color: "red",
-    },
-    {
-      label: "Medium",
-      value: "normal",
-      color: "red",
-    },
-    {
-      label: "Very Low",
-      value: "very-low",
-      color: "red",
-    },
-    {
-      label: "Low",
-      value: "low",
-      color: "red",
-    },
-  ];
+  addModal.value.toggleModal();
+  //   const priorityList = [
+  //     {
+  //       label: "Very High",
+  //       value: "very-high",
+  //       color: "red",
+  //     },
+  //     {
+  //       label: "High",
+  //       value: "high",
+  //       color: "red",
+  //     },
+  //     {
+  //       label: "Medium",
+  //       value: "normal",
+  //       color: "red",
+  //     },
+  //     {
+  //       label: "Very Low",
+  //       value: "very-low",
+  //       color: "red",
+  //     },
+  //     {
+  //       label: "Low",
+  //       value: "low",
+  //       color: "red",
+  //     },
+  //   ];
 
-  const priority = priorityList.find(
-    (e) => e.value === value?.priority || "very-high"
-  );
-  state.titleForEdit = value?.title || "";
-  state.priorityForEdit = priority;
-  state.idItem = value?.id || "";
-  state.isEdit = typeof value !== "undefined" ? true : false;
-  setTimeout(() => {
-    addModal.value.setState();
-    addModal.value.togleModal();
-  }, 100);
+  //     const priority = priorityList.find(
+  //       (e) => e.value === value?.priority || "very-high"
+  //     );
+  //     itemState.editTitle = value?.title || "";
+  //     itemState.editPriority = priority;
+  //     itemState.itemId = value?.id || "";
+  //     itemState.isEdit = typeof value !== "undefined" ? true : false;
+  //   setTimeout(() => {
+  //     addModal.value.setState();
+  //     addModal.value.togleModal();
+  //   }, 100);
   return;
 };
 </script>
