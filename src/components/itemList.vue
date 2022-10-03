@@ -45,7 +45,7 @@
       <button
         class="bg-primary text-white font-semibold text-base rounded-full py-5 lg:py-4 px-5 lg:px-6 gap-2 inline-flex items-center"
         type="button"
-        data-cy="activity-add-button"
+        data-cy="todo-add-button"
         @click=""
       >
         <i class="fa-solid fa-plus"></i>
@@ -57,17 +57,37 @@
   <div class="min-h-[70vh] lg:min-h-[60vh] flex justify-center items-center">
     <EmptyState @click="" emptyActivity />
   </div>
+
+  <div data-cy="modal-add">
+    <AddModal
+      ref="addModal"
+      @when-submit=""
+      :title="itemState.editPriority"
+      :priority="itemState.editPriority"
+      :is-edit="itemState.isEdit"
+    />
+  </div>
 </template>
 
 <script setup>
-import { onBeforeMount, reactive } from "vue";
+import { onBeforeMount, reactive, ref } from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
 import EmptyState from "./emptyState.vue";
+import AddModal from "./addModal.vue";
 
 const route = useRoute();
+const addMOdal = ref();
+
 const itemState = reactive({
   data: [],
+  editTitle: "",
+  editPriority: {
+    label: "Very High",
+    value: "very-high",
+    color: "red",
+  },
+  isEdit: false,
   opt: [
     {
       label: "Terbaru",
@@ -137,6 +157,49 @@ const editTitle = async () => {
     }
   );
   console.log(itemState.data);
+  return;
+};
+
+const addModalActive = (value) => {
+  const priorityList = [
+    {
+      label: "Very High",
+      value: "very-high",
+      color: "red",
+    },
+    {
+      label: "High",
+      value: "high",
+      color: "red",
+    },
+    {
+      label: "Medium",
+      value: "normal",
+      color: "red",
+    },
+    {
+      label: "Very Low",
+      value: "very-low",
+      color: "red",
+    },
+    {
+      label: "Low",
+      value: "low",
+      color: "red",
+    },
+  ];
+
+  const priority = priorityList.find(
+    (e) => e.value === value?.priority || "very-high"
+  );
+  state.titleForEdit = value?.title || "";
+  state.priorityForEdit = priority;
+  state.idItem = value?.id || "";
+  state.isEdit = typeof value !== "undefined" ? true : false;
+  setTimeout(() => {
+    addModal.value.setState();
+    addModal.value.togleModal();
+  }, 100);
   return;
 };
 </script>
