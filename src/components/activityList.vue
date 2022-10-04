@@ -12,9 +12,15 @@
     </button>
   </div>
   <div
+    v-if="activityObj.data.length === 0"
+    class="min-h-[70vh] lg:min-h-[60vh] flex items-center"
+  >
+    <EmptyState data-cy="activity-empty-state" @click="addNewActivity()" />
+  </div>
+  <div
     class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-7 lg:mt-13"
     data-cy="activity-item"
-    v-if="activityObj.data.length !== 0"
+    v-else
   >
     <ActivityCard
       v-for="activity in activityObj.data"
@@ -22,9 +28,6 @@
       :key="activity.id"
       @delete="deleteModalActive(activity)"
     />
-  </div>
-  <div v-else class="min-h-[70vh] lg:min-h-[60vh] flex items-center">
-    <EmptyState @click="addNewActivity()" />
   </div>
 
   <div data-cy="modal-delete">

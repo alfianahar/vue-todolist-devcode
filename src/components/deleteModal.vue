@@ -52,7 +52,6 @@
   </Teleport>
 </template>
 
-vbase
 <script setup>
 import { ref } from "vue";
 

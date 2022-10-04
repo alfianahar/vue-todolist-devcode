@@ -24,23 +24,48 @@
     </div>
 
     <div class="inline-flex items-center gap-2 lg:gap-4">
-      <div>
-        <!-- <button
-          v-if="itemState.data.length === 0"
-          class="hidden"
-          type="button"
-        ></button> -->
+      <div class="relative text-lg">
         <button
           class="px-4 py-3 rounded-full border-2 border-[#888888]"
           type="button"
           data-cy="todo-sort-button"
-          @click=""
+          @click="itemState.sortDropdown = !itemState.sortDropdown"
         >
           <i
             class="fa-solid fa-right-left fa-rotate-90"
             style="color: #888888"
           ></i>
         </button>
+        <transition
+          enter-active-class="transform transition duration-500 ease-custom"
+          enter-class="-translate-y-1/2 scale-y-0 opacity-0"
+          enter-to-class="translate-y-0 scale-y-100 opacity-100"
+          leave-active-class="transform transition duration-300 ease-custom"
+          leave-class="translate-y-0 scale-y-100 opacity-100"
+          leave-to-class="-translate-y-1/2 scale-y-0 opacity-0"
+        >
+          <ul
+            v-show="itemState.sortDropdown"
+            class="absolute left-0 right-0 mb-4 mt-2 bg-white divide-y rounded-lg shadow-lg overflow-hidden w-52"
+          >
+            <li
+              v-for="(option, index) in itemState.opt"
+              :key="index"
+              class="px-6 py-3 transition-colors duration-300 hover:bg-gray-200"
+              @mousedown.prevent="setOpt(option)"
+              data-cy="sort-selection"
+            >
+              <div class="flex justify-between">
+                <span class="text-base font-normal">
+                  {{ option.label }}
+                </span>
+                <div>
+                  {{ option.value === itemState.selectedOpt ? "&#10003;" : "" }}
+                </div>
+              </div>
+            </li>
+          </ul>
+        </transition>
       </div>
       <button
         class="bg-primary text-white font-semibold text-base rounded-full py-5 lg:py-4 px-5 lg:px-6 gap-2 inline-flex items-center"
@@ -53,9 +78,63 @@
       </button>
     </div>
   </div>
-  <div></div>
-  <div class="min-h-[70vh] lg:min-h-[60vh] flex justify-center items-center">
-    <EmptyState @click="addModalActive()" emptyActivity />
+  <div
+    v-if="itemState.data?.todo_items?.length === 0"
+    class="min-h-[70vh] lg:min-h-[60vh] flex justify-center items-center"
+  >
+    <EmptyState
+      data-cy="todo-empty-state"
+      @click="addModalActive()"
+      emptyActivity
+    />
+  </div>
+  <div v-else class="mt-7 lg:mt-13">
+    <div v-for="item in todo_items" :key="item.data" class="py-1">
+      <div
+        class="p-6 w-full h-20 bg-white rounded-xl border border-gray-200 shadow-xl inline-flex flex-col"
+      >
+        <div class="flex flex-row justify-between items-center">
+          <div class="inline-flex items-center gap-4">
+            <input
+              data-cy="todo-item-checkbox"
+              type="checkbox"
+              :id="'checkbox-' + item.id"
+              class="w-6 h-6 text-primary rounded focus:ring-primary focus:ring-2"
+              :checked="item.is_active === 0"
+              @click="setStatusItem(item.id, item.is_active)"
+            />
+            <div
+              class="inline-flex rounded-full h-3 w-3"
+              :class="{
+                'bg-[#ED4C5C]': item.priority === 'very-high',
+                'bg-[#F8A541]': item.priority === 'high',
+                'bg-[#00A790]': item.priority === 'normal',
+                'bg-[#428BC1]': item.priority === 'low',
+                'bg-[#8942C1]': item.priority === 'very-low',
+              }"
+            ></div>
+            <p
+              class="text-md text-gray-700"
+              :class="{ 'line-through': item.is_active === 0 }"
+              data-cy="todo-item-title"
+            >
+              {{ item.title }}
+            </p>
+            <button type="button" @click="addModalActive(item)">
+              <i class="fa-solid fa-pencil"></i>
+            </button>
+          </div>
+
+          <button
+            type="button"
+            @click.prevent="deleteModalActive(item.title, item.id)"
+            data-cy="todo-item-delete-button"
+          >
+            <i class="fa-regular fa-trash-can" style="color: #888888"></i>
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div data-cy="modal-add">
@@ -63,25 +142,97 @@
       ref="addModal"
       :title="itemState.addModalTitle"
       :priority="itemState.addModalPriority"
+      :is-edit="itemState.isEdit"
+      @add-item="itemEditor"
     />
-    <!-- :is-edit="itemState.isEdit" -->
-    <!-- @when-submit="" -->
+  </div>
+
+  <div data-cy="modal-delete">
+    <DeleteModal
+      ref="deleteModal"
+      :message="itemState.delTitleMsg"
+      @delete-modal="deleteActivity(itemState.itemId)"
+    />
+  </div>
+
+  <div data-cy="modal-information">
+    <DoneAlertModal ref="doneAlertModal" />
   </div>
 </template>
 
 <script setup>
-import { onBeforeMount, reactive, ref } from "vue";
+import { computed, onBeforeMount, reactive, ref } from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
 import EmptyState from "./emptyState.vue";
 import AddModal from "./addModal.vue";
+import DeleteModal from "./deleteModal.vue";
+import DoneAlertModal from "./doneAlertModal.vue";
 
 const route = useRoute();
 const addModal = ref();
+const deleteModal = ref();
+const doneAlertModal = ref();
+
+const todo_items = computed(() => {
+  let items = itemState.data?.todo_items;
+
+  function compare(a, b, sortedKey, sortedType) {
+    if (sortedType === "desc") {
+      if (a[sortedKey] < b[sortedKey]) {
+        return -1;
+      }
+      if (a[sortedKey] > b[sortedKey]) {
+        return 1;
+      }
+      return 0;
+    }
+    if (a[sortedKey] > b[sortedKey]) {
+      return -1;
+    }
+    if (a[sortedKey] < b[sortedKey]) {
+      return 1;
+    }
+    return 0;
+  }
+
+  if (itemState.selectedOpt === "terbaru" && items) {
+    items.sort((a, b) => compare(a, b, "id", "asc"));
+  }
+  if (itemState.selectedOpt === "terlama")
+    items = items.sort((a, b) => compare(a, b, "id", "desc"));
+  if (itemState.selectedOpt === "a_z")
+    items = items.sort((a, b) => compare(a, b, "title", "desc"));
+  if (itemState.selectedOpt === "z_a")
+    items = items.sort((a, b) => compare(a, b, "title", "asc"));
+  if (itemState.selectedOpt === "belum_selesai")
+    items = items.sort((a, b) => compare(a, b, "is_active", "asc"));
+
+  return items;
+});
+
+const getItemList = async () => {
+  try {
+    const id = route.params.id;
+    const response = await axios.get(
+      `https://todo.api.devcode.gethired.id/activity-groups/${id}`
+    );
+    console.log(response.data);
+    itemState.data = response.data;
+  } catch (error) {
+    console.error(error);
+  }
+  return;
+};
+
+onBeforeMount(async () => {
+  await getItemList();
+});
 
 const itemState = reactive({
-  data: [],
+  data: {},
   itemId: "",
+  delTitleMsg: "",
   addModalTitle: "",
   addModalPriority: {
     label: "Very High",
@@ -89,6 +240,8 @@ const itemState = reactive({
     color: "red",
   },
   isEdit: false,
+  sortDropdown: false,
+  selectedOpt: "terbaru",
   opt: [
     {
       label: "Terbaru",
@@ -117,24 +270,6 @@ const itemState = reactive({
     },
   ],
 });
-
-onBeforeMount(async () => {
-  await getItemList();
-});
-
-const getItemList = async () => {
-  try {
-    const id = route.params.id;
-    const response = await axios.get(
-      `https://todo.api.devcode.gethired.id/activity-groups/${id}`
-    );
-    console.log(response.data);
-    itemState.data = response.data;
-  } catch (error) {
-    console.error(error);
-  }
-  return;
-};
 
 const handleInput = (e) => {
   itemState.data.title = e.target.innerHTML;
@@ -202,5 +337,87 @@ const addModalActive = (value) => {
     addModal.value.toggleModal();
   }, 100);
   return;
+};
+
+const itemEditor = (value) => {
+  if (value.isEdit) {
+    editItem(value);
+    return;
+  }
+  createItem(value);
+  return;
+};
+
+const editItem = async (value) => {
+  const { title, priority } = value;
+  const req = {
+    title,
+    priority: priority.value,
+  };
+  await axios.patch(
+    `"https://todo.api.devcode.gethired.id/todo-items/${itemState.itemId}"`,
+    req,
+    { headers: { "content-type": "application/json" } }
+  );
+  await getItemList();
+  addModal.value.toggleModal();
+};
+
+const createItem = async (value) => {
+  const activity_group_id = route.params.id;
+  const { title, priority } = value;
+  const req = {
+    activity_group_id,
+    title,
+    priority: priority.value,
+  };
+  const response = await axios.post(
+    "https://todo.api.devcode.gethired.id/todo-items",
+    req,
+    {
+      headers: { "content-type": "application/json" },
+    }
+  );
+  console.log(response);
+  itemState.data.todo_items.push(response);
+  addModal.value.toggleModal();
+  return;
+};
+
+const deleteModalActive = (title, id) => {
+  itemState.itemId = id;
+  itemState.delTitleMsg = title;
+  deleteModal.value.toggleModal();
+  return;
+};
+
+const deleteActivity = async (id) => {
+  await axios.delete(`https://todo.api.devcode.gethired.id/todo-items/${id}`);
+  itemState.data.todo_items = itemState.data.todo_items.filter(
+    (val) => val.id !== id
+  );
+  await deleteModal.value.toggleModal();
+  doneAlertModal.value.toggleModal();
+};
+
+const setStatusItem = async (id, is_active) => {
+  const req = {
+    is_active: is_active === 0 ? 1 : 0,
+  };
+  await axios.patch(
+    `https://todo.api.devcode.gethired.id/todo-items/${id}`,
+    req,
+    { headers: { "content-type": "application/json" } }
+  );
+
+  await getItemList();
+
+  return;
+};
+
+const setOpt = (opt) => {
+  itemState.selectedOpt = opt?.value;
+  itemState.sortDropdown = false;
+  console.log(itemState.selectedOpt);
 };
 </script>
