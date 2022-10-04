@@ -15,7 +15,7 @@ const router = createRouter({
             }
         },
         {
-            path: "/detai/:id",
+            path: "/detail/:id",
             name: "detail",
             component: DetailView,
             meta: {

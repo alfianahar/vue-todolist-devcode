@@ -59,11 +59,13 @@
   </div>
 
   <div data-cy="modal-add">
-    <AddModal ref="addModal" />
-    <!-- @when-submit=""
-      :title="itemState.editPriority"
-      :priority="itemState.editPriority"
-      :is-edit="itemState.isEdit" -->
+    <AddModal
+      ref="addModal"
+      :title="itemState.addModalTitle"
+      :priority="itemState.addModalPriority"
+    />
+    <!-- :is-edit="itemState.isEdit" -->
+    <!-- @when-submit="" -->
   </div>
 </template>
 
@@ -80,8 +82,8 @@ const addModal = ref();
 const itemState = reactive({
   data: [],
   itemId: "",
-  editTitle: "",
-  editPriority: {
+  addModalTitle: "",
+  addModalPriority: {
     label: "Very High",
     value: "very-high",
     color: "red",
@@ -160,46 +162,45 @@ const editTitle = async () => {
 };
 
 const addModalActive = (value) => {
-  addModal.value.toggleModal();
-  //   const priorityList = [
-  //     {
-  //       label: "Very High",
-  //       value: "very-high",
-  //       color: "red",
-  //     },
-  //     {
-  //       label: "High",
-  //       value: "high",
-  //       color: "red",
-  //     },
-  //     {
-  //       label: "Medium",
-  //       value: "normal",
-  //       color: "red",
-  //     },
-  //     {
-  //       label: "Very Low",
-  //       value: "very-low",
-  //       color: "red",
-  //     },
-  //     {
-  //       label: "Low",
-  //       value: "low",
-  //       color: "red",
-  //     },
-  //   ];
+  const priorityList = [
+    {
+      label: "Very High",
+      value: "very-high",
+      color: "red",
+    },
+    {
+      label: "High",
+      value: "high",
+      color: "red",
+    },
+    {
+      label: "Medium",
+      value: "normal",
+      color: "red",
+    },
+    {
+      label: "Very Low",
+      value: "very-low",
+      color: "red",
+    },
+    {
+      label: "Low",
+      value: "low",
+      color: "red",
+    },
+  ];
 
-  //     const priority = priorityList.find(
-  //       (e) => e.value === value?.priority || "very-high"
-  //     );
-  //     itemState.editTitle = value?.title || "";
-  //     itemState.editPriority = priority;
-  //     itemState.itemId = value?.id || "";
-  //     itemState.isEdit = typeof value !== "undefined" ? true : false;
-  //   setTimeout(() => {
-  //     addModal.value.setState();
-  //     addModal.value.togleModal();
-  //   }, 100);
+  const priority = priorityList.find(
+    (e) => e.value === value?.priority || "very-high"
+  );
+  itemState.addModalTitle = value?.title || "";
+  itemState.addModalPriority = priority;
+  itemState.itemId = value?.id || "";
+  itemState.isEdit = typeof value !== "undefined" ? true : false;
+  setTimeout(() => {
+    addModal.value.setState();
+    addModal.value.toggleModal();
+  }, 100);
   return;
 };
 </script>
