@@ -355,7 +355,7 @@ const editItem = async (value) => {
     priority: priority.value,
   };
   await axios.patch(
-    `"https://todo.api.devcode.gethired.id/todo-items/${itemState.itemId}"`,
+    `https://todo.api.devcode.gethired.id/todo-items/${itemState.itemId}`,
     req,
     { headers: { "content-type": "application/json" } }
   );
@@ -380,6 +380,7 @@ const createItem = async (value) => {
   );
   console.log(response);
   itemState.data.todo_items.push(response);
+  await getItemList();
   addModal.value.toggleModal();
   return;
 };
