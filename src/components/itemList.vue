@@ -137,27 +137,21 @@
     </div>
   </div>
 
-  <div data-cy="modal-add">
-    <AddModal
-      ref="addModal"
-      :title="itemState.addModalTitle"
-      :priority="itemState.addModalPriority"
-      :is-edit="itemState.isEdit"
-      @add-item="itemEditor"
-    />
-  </div>
-
-  <div data-cy="modal-delete">
-    <DeleteModal
-      ref="deleteModal"
-      :message="itemState.delTitleMsg"
-      @delete-modal="deleteActivity(itemState.itemId)"
-    />
-  </div>
-
-  <div data-cy="modal-information">
-    <DoneAlertModal ref="doneAlertModal" />
-  </div>
+  <AddModal
+    ref="addModal"
+    :title="itemState.addModalTitle"
+    :priority="itemState.addModalPriority"
+    :is-edit="itemState.isEdit"
+    @add-item="itemEditor"
+    data-cy="modal-add"
+  />
+  <DeleteModal
+    ref="deleteModal"
+    :message="itemState.delTitleMsg"
+    @delete-modal="deleteActivity(itemState.itemId)"
+    data-cy="modal-delete"
+  />
+  <DoneAlertModal ref="doneAlertModal" data-cy="modal-information" />
 </template>
 
 <script setup>

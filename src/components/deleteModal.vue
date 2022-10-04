@@ -24,7 +24,6 @@
                   <span class="font-bold">"{{ message }}"</span> ?
                 </h1>
               </div>
-              <!-- Modal footer -->
               <div class="flex justify-center p-6 gap-4">
                 <button
                   class="bg-gray-200 text-black font-black py-3 px-12 rounded-full text-md inline-flex"

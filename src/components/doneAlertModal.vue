@@ -1,27 +1,25 @@
 <template>
-  <Teleport to="body">
-    <Transition name="modal-outer">
-      <div
-        v-show="modalActive"
-        class="w-full bg-black bg-opacity-40 h-screen top-0 left-0 flex justify-center items-center fixed"
-        @click.self="toggleModal()"
-      >
-        <Transition name="modal-inner">
-          <div class="relative p-4 w-full max-w-xl h-auto md:h-auto">
-            <div class="relative bg-white rounded-lg shadow p-4">
-              <div class="inline-flex items-center gap-4">
-                <i
-                  class="fa-solid fa-circle-info fa-2x"
-                  style="color: #00a790"
-                ></i>
-                <span>Activity berhasil dihapus</span>
-              </div>
+  <Transition name="modal-outer">
+    <div
+      v-show="modalActive"
+      class="w-full bg-black bg-opacity-40 h-screen top-0 left-0 flex justify-center items-center fixed"
+      @click.self="toggleModal()"
+    >
+      <Transition name="modal-inner">
+        <div class="relative p-4 w-full max-w-xl h-auto md:h-auto">
+          <div class="relative bg-white rounded-lg shadow p-4">
+            <div class="inline-flex items-center gap-4">
+              <i
+                class="fa-solid fa-circle-info fa-2x"
+                style="color: #00a790"
+              ></i>
+              <span>Activity berhasil dihapus</span>
             </div>
           </div>
-        </Transition>
-      </div>
-    </Transition>
-  </Teleport>
+        </div>
+      </Transition>
+    </div>
+  </Transition>
 </template>
 
 vbase

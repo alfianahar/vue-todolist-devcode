@@ -31,17 +31,13 @@
     />
   </div>
 
-  <div data-cy="modal-delete">
-    <DeleteModal
-      ref="deleteModal"
-      :message="activityObj.delTitle"
-      @delete-modal="deleteActivity(activityObj.delId)"
-    />
-  </div>
-
-  <div data-cy="modal-information">
-    <DoneAlertModal ref="doneAlertModal" />
-  </div>
+  <DeleteModal
+    ref="deleteModal"
+    :message="activityObj.delTitle"
+    @delete-modal="deleteActivity(activityObj.delId)"
+    data-cy="modal-delete"
+  />
+  <DoneAlertModal ref="doneAlertModal" data-cy="modal-information" />
 </template>
 
 <script setup>
