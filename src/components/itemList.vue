@@ -374,8 +374,8 @@ const createItem = async (value) => {
   );
   console.log(response);
   itemState.data.todo_items.push(response);
-  await getItemList();
   addModal.value.toggleModal();
+  await getItemList();
   return;
 };
 
