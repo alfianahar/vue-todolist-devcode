@@ -3,7 +3,9 @@
     class="sticky top-0 bg-primary px-6 py-8 lg:py-8 lg:px-48 shadow-lg z-50"
   >
     <RouterLink :to="{ name: 'home' }">
-      <h1 class="text-2xl font-bold text-white">TO DO LIST APP</h1>
+      <h1 class="text-2xl font-bold text-white" data-cy="header-title">
+        TO DO LIST APP
+      </h1>
     </RouterLink>
   </header>
 </template>

@@ -2,6 +2,7 @@
   <div
     @click="activityList(activity.id)"
     class="p-6 w-full lg:w-56 h-56 bg-white rounded-xl border border-gray-200 shadow-xl inline-flex flex-col justify-between"
+    :id="'card-' + activity.id"
   >
     <h1 class="mb-2 text-xl font-bold" data-cy="activity-item-title">
       {{ activity.title }}
@@ -15,8 +16,8 @@
       </p>
       <button
         type="button"
-        data-cy="activity-item-delete-button"
         @click.stop="$emit('delete')"
+        data-cy="activity-item-delete-button"
       >
         <i class="fa-regular fa-trash-can" style="color: #888888"></i>
       </button>

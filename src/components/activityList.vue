@@ -1,6 +1,6 @@
 <template>
   <div class="flex justify-between w-full">
-    <h1 class="font-bold text-3xl">Activity</h1>
+    <h1 class="font-bold text-3xl" data-cy="activity-title">Activity</h1>
     <button
       class="bg-primary text-white font-semibold text-base rounded-full py-3 px-3 lg:px-6 gap-2 inline-flex items-center"
       type="button"
@@ -26,6 +26,7 @@
       v-for="activity in activityObj.data"
       :activity="activity"
       :key="activity.id"
+      :id="activity.id"
       @delete="deleteModalActive(activity)"
     />
   </div>
