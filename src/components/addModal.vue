@@ -116,10 +116,6 @@
                       </ul>
                     </transition>
                   </div>
-                  <button
-                    type="button"
-                    data-cy="modal-add-priority-dropdown"
-                  ></button>
                 </div>
               </div>
               <div class="flex justify-end px-7 pt-4 pb-5">
