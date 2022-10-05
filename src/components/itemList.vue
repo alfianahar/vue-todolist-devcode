@@ -12,7 +12,7 @@
         v-model="itemState.data.title"
         @keydown.enter="editTitle()"
         @blur="editTitle()"
-        class="bg-transparent border-b-2 font-bold text-2xl"
+        class="bg-transparent border-b-2 font-bold text-2xl w-full"
       />
       <!-- @input="handleInput" -->
       <h1
