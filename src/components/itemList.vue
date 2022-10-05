@@ -1,20 +1,25 @@
 <template>
   <div class="flex justify-between w-full">
     <div class="inline-flex items-center gap-3 lg:gap-4">
-      <RouterLink
-        :to="{ name: 'home' }"
-        type="button"
-        data-cy="activity-add-button"
-      >
+      <RouterLink :to="{ name: 'home' }" type="button">
         <i class="fa-solid fa-angle-left fa-2x"></i>
       </RouterLink>
-      <h1
-        class="font-bold text-2xl lg:text-3xl"
+      <!-- <span>{{ itemState.data.title }}</span> -->
+      <input
+        v-if="itemState.editActivityTitle"
+        type="text"
         id="item-title"
-        data-cy="todo-title"
-        contenteditable="true"
+        v-model="itemState.data.title"
+        @keydown.enter="editTitle()"
         @blur="editTitle()"
-        @input="handleInput"
+        class="bg-transparent border-b-2 font-bold text-2xl"
+      />
+      <!-- @input="handleInput" -->
+      <h1
+        v-else
+        class="font-bold text-2xl lg:text-3xl cursor-pointer"
+        data-cy="todo-title"
+        @click="focusTitle()"
       >
         {{ itemState.data.title }}
       </h1>
@@ -226,6 +231,7 @@ onBeforeMount(async () => {
 const itemState = reactive({
   data: {},
   itemId: "",
+  editActivityTitle: false,
   delTitleMsg: "",
   addModalTitle: "",
   addModalPriority: {
@@ -271,7 +277,11 @@ const handleInput = (e) => {
 };
 
 const focusTitle = () => {
-  document.getElementById("item-title").focus();
+  itemState.editActivityTitle = !itemState.editActivityTitle;
+  console.log(itemState.editActivityTitle);
+  setTimeout(() => {
+    document.getElementById("item-title").focus();
+  }, 50);
   return;
 };
 
@@ -286,6 +296,9 @@ const editTitle = async () => {
       headers: { "content-type": "application/json" },
     }
   );
+  setTimeout(() => {
+    itemState.editActivityTitle = false;
+  }, 50);
   console.log(itemState.data);
   return;
 };
@@ -416,3 +429,9 @@ const setOpt = (opt) => {
   console.log(itemState.selectedOpt);
 };
 </script>
+
+<style scoped>
+input:focus {
+  outline: none !important;
+}
+</style>

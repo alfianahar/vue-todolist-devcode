@@ -128,7 +128,7 @@
                   :class="{ 'bg-opacity-70': state.title === '' }"
                   :disabled="state.title === ''"
                   type="submit"
-                  data-cy="todo-add-button"
+                  data-cy="modal-add-save-button"
                   @click=""
                 >
                   Simpan
