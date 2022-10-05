@@ -46,7 +46,7 @@ defineExpose({ toggleModal });
 <style scoped>
 .modal-outer-enter-active,
 .modal-outer-leave-active {
-  transition: opacity 0.3s cubic-bezier(0.52, 0.02, 0.19, 1.02);
+  transition: opacity 0.15s cubic-bezier(0.52, 0.02, 0.19, 1.02);
 }
 
 .modal-outer-enter-from,
@@ -55,10 +55,10 @@ defineExpose({ toggleModal });
 }
 
 .modal-inner-enter-active {
-  transition: all 0.3s cubic-bezier(0.52, 0.02, 0.19, 1.02) 0.15s;
+  transition: all 0.15s cubic-bezier(0.52, 0.02, 0.19, 1.02) 0.075s;
 }
 .modal-inner-leave-active {
-  transition: all 0.3s cubic-bezier(0.52, 0.02, 0.19, 1.02);
+  transition: all 0.15s cubic-bezier(0.52, 0.02, 0.19, 1.02);
 }
 .modal-inner-enter-from {
   opacity: 0;

@@ -1,11 +1,11 @@
 <template>
   <main class="flex flex-col gap px-6 py-11 lg:px-48">
     <ActivityList />
-    <Suspense>
+    <!-- <Suspense>
       <template #fallback>
         <LoaderSpin />
       </template>
-    </Suspense>
+    </Suspense> -->
   </main>
 </template>
 

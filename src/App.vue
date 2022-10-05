@@ -17,7 +17,7 @@ import SiteTitle from "./components/SiteTitle.vue";
 <style>
 .page-enter-active,
 .page-leave-active {
-  transition: 600ms ease all;
+  transition: 150ms ease all;
 }
 .page-enter-from,
 .page-leave-to {
